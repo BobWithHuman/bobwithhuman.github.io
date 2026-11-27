@@ -320,3 +320,12 @@ footer .sp { margin-left: auto; }
 .field-gate canvas { display: block; width: 100%; min-width: 860px; height: clamp(440px, calc(100svh - 250px), 620px); }
 /* In the column-flex sections a centred .wrap would shrink to its content; keep it full width */
 main > section > .wrap { width: 100%; }
+
+/* The demo's heading and the labels over its two panes */
+.demo-head { width: 100%; margin-bottom: 22px; }
+.demo-head h2 { font-size: clamp(30px, 3.6vw, 50px); max-width: none; }
+.pane-labels { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 44fr) minmax(0, 56fr); margin-bottom: 10px; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--mut); }
+.pane-labels > span { display: inline-flex; align-items: center; gap: 8px; padding-left: 4px; }
+.pane-labels svg { width: 15px; height: 15px; color: var(--blue); }
+.win .panes { height: clamp(400px, calc(100svh - 360px), 600px); }
+@media (max-width: 960px) { .pane-labels { display: none; } }
