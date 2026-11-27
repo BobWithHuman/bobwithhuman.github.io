@@ -8,7 +8,6 @@ import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { Flip } from "gsap/Flip";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import Lenis from "lenis";
-import Snap from "lenis/snap";
 import { hydrateIcons, q, reduced, still } from "./lib";
 import { initBurst, initCursor, initMagnets } from "./fx";
 import { heroScrollOut, initField, introAndHeadline } from "./hero";
@@ -25,7 +24,8 @@ if (reduced) document.documentElement.classList.add("reduced");
 // Smooth scrolling drives every scroll animation through GSAP's clock.
 let lenis: Lenis | null = null;
 if (!reduced && !still) {
-  lenis = new Lenis({ lerp: .09, smoothWheel: true });
+  // Wheel input is turned into whole-section moves below, so Lenis itself takes none of it.
+  lenis = new Lenis({ lerp: .09, smoothWheel: true, wheelMultiplier: q.has("nosnap") ? 1 : 0 });
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((t) => lenis!.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -47,10 +47,28 @@ initGate();
 mountBento($("#bento"));
 mountMore();
 initReveals();
-// One wheel turn moves one whole section, so nothing is left half on screen.
+// One wheel gesture moves one whole section. A trackpad keeps sending wheel events for a second or
+// more after the fingers lift; those belong to the same gesture, so the next move waits until the
+// wheel has been quiet for a moment.
 if (lenis && !q.has("nosnap")) {
-  const snap = new Snap(lenis, { type: "lock", duration: 1.1, debounce: 60, distanceThreshold: "100%" });
-  document.querySelectorAll<HTMLElement>("main > section").forEach((el) => snap.addElement(el, { align: "start" }));
+  const sections = () => [...document.querySelectorAll<HTMLElement>("main > section")];
+  const tops = () => sections().map((el) => Math.round(el.getBoundingClientRect().top + lenis!.scroll));
+  const QUIET = 220;
+  let moving = false, armed = true, last = 0;
+  addEventListener("wheel", (e) => {
+    if (e.ctrlKey) return;
+    e.preventDefault();
+    const now = performance.now(), gap = now - last; last = now;
+    if (!armed && !moving && gap > QUIET) armed = true;
+    if (!armed || Math.abs(e.deltaY) < 3) return;
+    const ts = tops(), y = lenis!.scroll;
+    let i = 0; ts.forEach((t, k) => { if (Math.abs(t - y) < Math.abs(ts[i] - y)) i = k; });
+    const next = Math.max(0, Math.min(ts.length - 1, i + (e.deltaY > 0 ? 1 : -1)));
+    armed = false;
+    if (next === i) return;
+    moving = true;
+    lenis!.scrollTo(ts[next], { duration: 1, lock: true, force: true, onComplete: () => { moving = false; } });
+  }, { passive: false, capture: true });
 }
 document.fonts.ready.then(() => ScrollTrigger.refresh());
 addEventListener("load", () => ScrollTrigger.refresh());
