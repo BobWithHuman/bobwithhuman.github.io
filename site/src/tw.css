@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn tokens, set to the page's own colours */
+:root {
+  --background: #fbfaf8; --foreground: #121212; --card: #ffffff; --card-foreground: #121212;
+  --muted: #f3f1ee; --muted-foreground: #5c5f66; --border: rgba(20,18,15,.09); --input: rgba(20,18,15,.12);
+  --primary: #121212; --primary-foreground: #ffffff; --secondary: #f3f1ee; --secondary-foreground: #121212;
+  --accent: #eef4ff; --accent-foreground: #1557d6; --ring: #1f6bff; --radius: 1rem;
+}
+@theme inline {
+  --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card); --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground); --color-border: var(--border); --color-input: var(--input);
+  --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-ring: var(--ring);
+  --radius-lg: var(--radius); --radius-md: calc(var(--radius) - 4px); --radius-sm: calc(var(--radius) - 8px);
+  --font-sans: Geist, "Pretendard Variable", Inter, system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace; --animate-orbit: orbit calc(var(--duration)*1s) linear infinite; --animate-marquee: marquee var(--duration) infinite linear; --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+    }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
+    }
+  }
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
