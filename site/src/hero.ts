@@ -143,6 +143,8 @@ export function introAndHeadline(onDone: () => void) {
     if (reduced || still) { onDone(); words(); return; }
     const split = SplitText.create("#h1-a", { type: "words,chars", mask: "words" });
     const tl = gsap.timeline({ onComplete: () => { onDone(); } });
+    // Once the letters are up, the masks have done their job: unwrap them so nothing is clipped.
+    tl.call(() => split.revert(), [], 1.6);
     tl.from(split.chars, { yPercent: 120, rotate: 10, duration: 1.1, ease: "expo.out", stagger: .018 }, .05)
       .from(".l2", { opacity: 0, scale: .6, filter: "blur(18px)", duration: 1, ease: "expo.out" }, .45)
       .from(["#sub", "#acts", "#works"], { y: 30, opacity: 0, duration: .9, ease: "expo.out", stagger: .09 }, .65)

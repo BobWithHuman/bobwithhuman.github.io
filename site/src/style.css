@@ -92,6 +92,8 @@ nav .gh svg { width: 16px; height: 16px; }
 @media (max-width: 520px) { .badge .bt { display: none; } .badge { padding-right: 6px; } }
 h1 { margin: 28px auto 0; font-size: clamp(44px, 8.4vw, 120px); line-height: .96; letter-spacing: -.055em; font-weight: 700; max-width: 11.5ch; }
 h1 .l1 { display: inline; }
+/* SplitText's word masks clip at the tight line box: give descenders (g, j, p, y) room, then take it back so lines keep their spacing. */
+#h1-a > * { padding-bottom: .2em; margin-bottom: -.2em; }
 h1 .l2 { display: block; min-height: 1em; font-size: .62em; margin-top: .12em; }
 h1 .rot { color: var(--red); white-space: nowrap; display: inline-block; }
 h1 .rot.serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; padding-right: .04em; }
